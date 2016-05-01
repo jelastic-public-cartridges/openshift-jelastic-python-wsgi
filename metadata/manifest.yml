@@ -1,0 +1,41 @@
+---
+Name: apache
+Cartridge-Short-Name: PYTHON
+Display-Name: Python multiversion
+Description: 'Python is a general-purpose, high-level programming language whose design
+  philosophy emphasizes code readability. Popular development frameworks include:
+  Django, Bottle, Pylons, Zope and TurboGears.'
+Version: '2.2'
+Source-Url: https://github.com/jelastic-public-cartridges/openshift-jelastic-python-wsgi.git
+License: The Python License, version 2.7-3.4
+License-Url: http://docs.python.org/3/license.html
+Vendor: python.org
+Cartridge-Version: 0.0.12
+Compatible-Versions:
+- 0.0.10
+- 0.0.11
+Cartridge-Vendor: redhat
+Categories:
+- service
+- python
+- web_framework
+Website: http://www.python.org
+Help-Topics:
+  Developer Center: https://www.openshift.com/developers
+Publishes: 
+Subscribes:
+  set-env:
+    Type: ENV:*
+    Required: false
+  set-doc-url:
+    Type: STRING:urlpath
+    Required: false
+Scaling:
+  Min: 1
+  Max: -1
+Endpoints:
+- Private-IP-Name: IP
+  Private-Port-Name: PORT
+  Private-Port: 8080
+  Public-Port-Name: PROXY_PORT
+ 

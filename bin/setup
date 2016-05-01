@@ -1,0 +1,37 @@
+#!/bin/bash -eu
+
+source $OPENSHIFT_CARTRIDGE_SDK_BASH
+
+case "$1" in
+    -v|--version)
+      version="$2"
+esac
+
+mkdir -p ${OPENSHIFT_PYTHON_DIR}etc
+
+
+#[ ! -L  "/etc/httpd/conf.d/wsgi.conf" ] && ln -s ${OPENSHIFT_PYTHON_DIR}/versions/${OPENSHIFT_PYTHON_VERSION}/etc/httpd/conf.d/wsgi.conf
+
+# Copy the version specific files to python directory
+#shopt -s dotglob
+#cp -rf $OPENSHIFT_PYTHON_DIR/versions/${OPENSHIFT_PYTHON_VERSION}/etc/* $OPENSHIFT_PYTHON_DIR/versions/${OPENSHIFT_PYTHON_VERSION}/etc
+#[ -d $OPENSHIFT_PYTHON_DIR/versions/${OPENSHIFT_PYTHON_VERSION}/metadata ] && cp -rf $OPENSHIFT_PYTHON_DIR/versions/${OPENSHIFT_PYTHON_VERSION}/metadata/* $OPENSHIFT_PYTHON_DIR/versions/${OPENSHIFT_PYTHON_VERSION}/metadata
+
+# Create/truncate gear-editable Apache configuration files
+#echo > $OPENSHIFT_PYTHON_DIR/versions/${OPENSHIFT_PYTHON_VERSION}/etc/conf.d/openshift.conf
+#echo > $OPENSHIFT_PYTHON_DIR/versions/${OPENSHIFT_PYTHON_VERSION}/etc/conf.d/passenv.conf
+
+cp -f $OPENSHIFT_PYTHON_DIR/versions/${OPENSHIFT_PYTHON_VERSION}/etc/conf.d/performance.conf.erb $OPENSHIFT_PYTHON_DIR/versions/${OPENSHIFT_PYTHON_VERSION}/etc/conf/performance.conf.erb
+cp -f $OPENSHIFT_PYTHON_DIR/versions/${OPENSHIFT_PYTHON_VERSION}/etc/conf/performance.conf.erb $OPENSHIFT_PYTHON_DIR/versions/${OPENSHIFT_PYTHON_VERSION}/etc/conf/performance.conf.erb.hidden
+
+
+
+
+# Update environment
+#source ${OPENSHIFT_PYTHON_DIR}usr/versions/${version}/lib/update-configuration
+#update-configuration
+
+# Call the version specific setup script
+#exec ${OPENSHIFT_PYTHON_DIR}usr/versions/${version}/bin/setup $version
+
+
