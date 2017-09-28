@@ -15,8 +15,8 @@ function _setContext(){
 
 function getPackageName() {
     if [ -f "$package_url" ]; then
-        package_name=$(basename "${package_url:7}")
-        package_path=$(dirname "${package_url:7}")
+        package_name=$(basename "${package_url}")
+        package_path=$(dirname "${package_url}")
     elif [[ "${package_url}" =~ file://* ]]; then
         package_name=$(basename "${package_url:7}")
         package_path=$(dirname "${package_url:7}")
