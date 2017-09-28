@@ -15,15 +15,18 @@ function _setContext(){
 
 function getPackageName() {
     if [ -f "$package_url" ]; then
-        package_name="$package_url";
+        package_name=$(basename "${package_url:7}")
+        package_path=$(dirname "${package_url:7}")
     elif [[ "${package_url}" =~ file://* ]]; then
-        package_name="${package_url:7}"
-        [ -f "$package_name" ] || { writeJSONResponseErr "result=>4078" "message=>Error loading file from URL"; die -q; }
+        package_name=$(basename "${package_url:7}")
+        package_path=$(dirname "${package_url:7}")
+        [ -f "${package_path}/${package_name}" ] || { writeJSONResponseErr "result=>4078" "message=>Error loading file from URL"; die -q; }
     else
         ensureFileCanBeDownloaded $package_url;
-        $WGET --no-check-certificate --content-disposition --directory-prefix=${DOWNLOADS} $package_url >> $ACTIONS_LOG 2>&1 || { writeJSONResponseErr "result=>4078" "message=>Error loading file from URL"; die -q; }
-        package_name="${DOWNLOADS}/$(ls ${DOWNLOADS})";
-        [ ! -s "$package_name" ] && {
+        $WGET --no-check-certificate --content-disposition --directory-prefix="$DOWNLOADS" $package_url >> $ACTIONS_LOG 2>&1 || { writeJSONResponseErr "result=>4078" "message=>Error loading file from URL"; die -q; }
+        package_name="$(ls ${DOWNLOADS})";
+        package_path=${DOWNLOADS};
+        [ ! -s "${package_path}/${package_name}" ] && {
             set -f
             rm -f "${package_name}";
             set +f
@@ -44,23 +47,23 @@ function _unpack(){
     [[ ! -d "$APPWEBROOT" ]] && { mkdir -p $APPWEBROOT;}
     if [[ ${package_url} =~ .zip$ ]] || [[ ${package_name} =~ .zip$ ]]
     then
-        $UNZIP -o "$package_name" -d "$APPWEBROOT" 2>>$ACTIONS_LOG 1>/dev/null;
+        $UNZIP -o "${package_path}/${package_name}" -d "$APPWEBROOT" 2>>$ACTIONS_LOG 1>/dev/null;
         rcode=$?;
         [ "$rcode" -eq 1 ] && return 0 || return $rcode
     fi
     if [[ ${package_url} =~ .tar$ ]] || [[ ${package_name} =~ .tar$ ]]
     then
-       $TAR --overwrite -xpf "$package_name" -C "$APPWEBROOT" >> $ACTIONS_LOG 2>&1;
+       $TAR --overwrite -xpf "${package_path}/${package_name}" -C "$APPWEBROOT" >> $ACTIONS_LOG 2>&1;
        return $?;
     fi
     if [[ ${package_url} =~ .tar.gz$ ]] || [[ ${package_name} =~ .tar.gz$ ]]
     then
-       $TAR --overwrite -xpzf "$package_name" -C "$APPWEBROOT" >> $ACTIONS_LOG 2>&1;
+       $TAR --overwrite -xpzf "${package_path}/${package_name}" -C "$APPWEBROOT" >> $ACTIONS_LOG 2>&1;
        return $?;
     fi
     if [[ ${package_url} =~ .tar.bz2$ ]] || [[ ${package_name} =~ .tar.bz2$ ]]
     then
-       $TAR --overwrite -xpjf  "$package_name" -C "$APPWEBROOT" >> $ACTIONS_LOG 2>&1;
+       $TAR --overwrite -xpjf  "${package_path}/${package_name}" -C "$APPWEBROOT" >> $ACTIONS_LOG 2>&1;
        return $?;
     fi
 }
