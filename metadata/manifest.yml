@@ -38,4 +38,8 @@ Endpoints:
   Private-Port-Name: PORT
   Private-Port: 8080
   Public-Port-Name: PROXY_PORT
+- Private-IP-Name:   EXIM_IP
+  Private-Port-Name: EXIM_PORT
+  Private-Port:      7979
+  Public-Port-Name:  EXIM_PROXY_PORT
  
